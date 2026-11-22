@@ -90,3 +90,12 @@ print_person(p(Name, Dept, Lang, Project)) :-
 main :-
     once(satisfies([1, 2, 3, 4, 5, 6, 7, 8], Sol)),
     forall(member(P, Sol), print_person(P)).
+
+    % count_solutions(+Active, -N)
+% N is the number of solutions that satisfy exactly the clues listed in
+% Active and ignore all the others.
+% Declarative reading: N is the length of the list of all candidates that
+% pass every clue in Active.
+count_solutions(Active, N) :-
+    findall(Sol, satisfies(Active, Sol), Sols),
+    length(Sols, N).
