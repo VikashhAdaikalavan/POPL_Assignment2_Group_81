@@ -58,3 +58,50 @@ build_expr(List, expr(Op, Left, Right)) :-
     member(Op, [+, -, *, /]),
     build_expr(LeftNums, Left),
     build_expr(RightNums, Right).
+
+% ============================================================
+% Unit 3: eval_expr/2
+% ============================================================
+
+% eval_expr(+Expr, -Value)
+%
+% Declarative reading: Value is the integer result of evaluating the
+% expression tree Expr. Fails (without raising an error) when any
+% division in the tree has a zero divisor or produces a non-integer
+% result. Negative intermediate values are supported.
+%
+% Base case: a leaf num(N) evaluates to N.
+% Recursive cases: evaluate both sub-trees, then apply the operator.
+% Division: check VR \= 0 first, then check exact divisibility via mod,
+% then compute the quotient with //.
+
+% base case
+eval_expr(num(N), N).
+
+% addition
+eval_expr(expr(+, L, R), V) :-
+    eval_expr(L, VL),
+    eval_expr(R, VR),
+    V is VL + VR.
+
+% subtraction
+eval_expr(expr(-, L, R), V) :-
+    eval_expr(L, VL),
+    eval_expr(R, VR),
+    V is VL - VR.
+
+% multiplication
+eval_expr(expr(*, L, R), V) :-
+    eval_expr(L, VL),
+    eval_expr(R, VR),
+    V is VL * VR.
+
+% division: succeeds only when the divisor is nonzero and the division
+% is exact (no remainder). Uses // which truncates toward zero; this
+% agrees with div when the remainder is zero.
+eval_expr(expr(/, L, R), V) :-
+    eval_expr(L, VL),
+    eval_expr(R, VR),
+    VR =\= 0,
+    VL mod VR =:= 0,
+    V is VL // VR.
