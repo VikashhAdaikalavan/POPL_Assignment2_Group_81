@@ -111,3 +111,14 @@
     (newline)
     (display (postorder tree))
     (newline)))
+
+;; print-height-and-leaves: prints (height leaf-count) of a binary tree on one line.
+;; Arguments: tree ('() or (value left right)).
+;; Return type: void (prints via display and newline).
+;; Recursive reading: printing the height and leaf count for a tree displays
+;; the list produced by (tree-height-and-leaves tree) followed by a newline,
+;; delegating computation to tree-height-and-leaves with no top-level output.
+(define (print-height-and-leaves tree)
+  (begin
+    (display (tree-height-and-leaves tree))
+    (newline)))
