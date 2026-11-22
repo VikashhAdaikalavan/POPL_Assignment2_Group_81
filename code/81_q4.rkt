@@ -66,3 +66,17 @@
 ;;                 (lambda (len) (< len n)). Exactly one definition in file.
 (define (insert-if-short x lst n)
   ((make-inserter x (lambda (len) (< len n))) lst))
+
+;; print-insert-result : → void
+;; Purpose  : reads x, lst, and n from standard input in order, applies
+;;            insert-if-short, and prints the result followed by a newline.
+;; Args     : none.
+;; Returns  : void.
+;; Behavior : uses read to consume inputs sequentially, display to print the
+;;            result without labels/prompts, and newline to terminate output.
+(define (print-insert-result)
+  (let* ((x (read))
+         (lst (read))
+         (n (read)))
+    (display (insert-if-short x lst n))
+    (newline)))
