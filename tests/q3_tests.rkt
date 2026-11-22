@@ -49,9 +49,10 @@
 ;; postorder: collects node values in left-right-root order.
 ;; Arguments: tree ('() or (value left right)).
 ;; Return type: list of values in postorder traversal order.
-;; Recursive reading: the postorder list for a tree is the postorder sequence
-;; of its left subtree, followed by the postorder sequence of its right subtree,
-;; followed by its root value; for '(), it is '().
+;; Recursive reading: the postorder list for a tree is obtained by prepending
+;; the root value onto the accumulator, traversing the right subtree with that
+;; accumulator, and then traversing the left subtree with the resulting
+;; accumulator; for '(), it returns the accumulator ('() initially).
 (define (postorder tree)
   (letrec ((step (lambda (t acc)
                    (if (null? t)
@@ -59,10 +60,10 @@
                        (let* ((val (car t))
                               (left (cadr t))
                               (right (caddr t))
-                              (acc-node (cons val acc))
-                              (acc-right (step right acc-node)))
+                              (acc-root (cons val acc))
+                              (acc-right (step right acc-root)))
                          (step left acc-right))))))
-    (my-reverse (step tree '()) '())))
+    (step tree '())))
 
 ;; tree-height-and-leaves: computes the height and leaf count of a binary tree.
 ;; Arguments: tree ('() or (value left right)).
