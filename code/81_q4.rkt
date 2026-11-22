@@ -53,3 +53,26 @@
     (if (< orig-len n)
         (cons x processed-elements)
         processed-elements)))
+
+;; make-inserter : any (integer → boolean) → ((nested list) → (nested list))
+;; Purpose  : higher-order function that returns a list transformer.
+;; Args     : x       — atom to conditionally insert.
+;;            len-ok? — 1-argument predicate testing original list length.
+;; Returns  : a function accepting a (nested) list that recursively inserts x
+;;            at the front of every list whose original length satisfies len-ok?.
+;; Recursion: letrec binds inserter so the returned function can recursively
+;;            apply itself to sublists via my-map.
+(define (make-inserter x len-ok?)
+  (letrec ((inserter
+            (lambda (lst)
+              (let* ((orig-len (my-length lst))
+                     (processed-elements
+                      (my-map (lambda (elem)
+                                (if (or (pair? elem) (null? elem))
+                                    (inserter elem)
+                                    elem))
+                              lst)))
+                (if (len-ok? orig-len)
+                    (cons x processed-elements)
+                    processed-elements)))))
+    inserter))
