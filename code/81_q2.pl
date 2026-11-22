@@ -105,3 +105,52 @@ eval_expr(expr(/, L, R), V) :-
     VR =\= 0,
     VL mod VR =:= 0,
     V is VL // VR.
+
+% ============================================================
+% Unit 4: op_prec/2, needs_parens/3, expr_str/4, expr_to_string/2
+% ============================================================
+
+% op_prec(+Op, -Prec)
+% Declarative reading: Op has binding precedence Prec.
+% Lower-binding operators (+, -) have Prec = 1.
+% Higher-binding operators (*, /) have Prec = 2.
+op_prec(+, 1).
+op_prec(-, 1).
+op_prec(*, 2).
+op_prec(/, 2).
+
+% needs_parens(+ChildPrec, +ParentPrec, +Side)
+% Declarative reading: an expression with top-operator precedence ChildPrec,
+% occupying position Side of a parent whose operator has precedence ParentPrec,
+% requires enclosing parentheses.
+% Left operand:  parenthesise iff child's precedence is STRICTLY LOWER than parent's.
+% Right operand: parenthesise iff child's precedence is SAME OR LOWER than parent's.
+needs_parens(ChildPrec, ParentPrec, left)  :- ChildPrec <  ParentPrec.
+needs_parens(ChildPrec, ParentPrec, right) :- ChildPrec =< ParentPrec.
+
+% expr_to_string(+Expr, -String)
+% Declarative reading: String is the canonical no-space SWI-Prolog string
+% for Expr. Delegates to expr_str/4 with ParentPrec=0 (no parent context)
+% so the outermost expression is never wrapped in parentheses.
+expr_to_string(Expr, String) :-
+    expr_str(Expr, 0, left, String).
+
+% expr_str(+Expr, +ParentPrec, +Side, -Str)
+% Declarative reading: Str is the string for Expr, wrapped in parentheses
+% when the parenthesisation rules require it given the parent context.
+% ParentPrec = 0 means there is no parent; no outer parentheses are added.
+
+% A single number is never parenthesised regardless of context.
+expr_str(num(N), _ParentPrec, _Side, Str) :-
+    number_string(N, Str).
+
+% A compound expression: recurse on children, concatenate, then wrap if needed.
+expr_str(expr(Op, L, R), ParentPrec, Side, Str) :-
+    op_prec(Op, MyPrec),
+    expr_str(L, MyPrec, left,  LS),
+    expr_str(R, MyPrec, right, RS),
+    format(string(Inner), "~w~w~w", [LS, Op, RS]),
+    (   needs_parens(MyPrec, ParentPrec, Side)
+    ->  format(string(Str), "(~w)", [Inner])
+    ;   Str = Inner
+    ).
