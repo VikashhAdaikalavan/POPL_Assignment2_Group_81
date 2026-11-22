@@ -85,3 +85,14 @@
                                      (leaves (+ (cadr res-l) (cadr res-r))))
                                  (list h leaves)))))))))
     (step tree)))
+
+;; print-inorder: prints the inorder traversal list of a binary tree on one line.
+;; Arguments: tree ('() or (value left right)).
+;; Return type: void (prints via display and newline).
+;; Recursive reading: printing the inorder traversal for a tree displays the
+;; list produced by (inorder tree) followed by a newline, delegating traversal
+;; to the inorder helper with no extra state or top-level output.
+(define (print-inorder tree)
+  (begin
+    (display (inorder tree))
+    (newline)))
