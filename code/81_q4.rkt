@@ -31,3 +31,25 @@
               out
               (rev (cdr r) (cons (car r) out))))
         (loop (cdr l) (cons (f (car l)) acc)))))
+
+;; insert-if-short : any (nested list) integer → (nested list)
+;; Purpose  : inserts x at the front of every list (at all nesting levels)
+;;            whose original top-level length is strictly less than n.
+;; Args     : x   — atom to conditionally insert.
+;;            lst — (nested) list.
+;;            n   — non-negative integer threshold.
+;; Returns  : modified nested list.
+;; Recursion: recursively processes sublists (pairs or empty sublists) using
+;;            my-map, then prepends x if the original length of lst was
+;;            strictly less than n.
+(define (insert-if-short x lst n)
+  (let* ((orig-len (my-length lst))
+         (processed-elements
+          (my-map (lambda (elem)
+                    (if (or (pair? elem) (null? elem))
+                        (insert-if-short x elem n)
+                        elem))
+                  lst)))
+    (if (< orig-len n)
+        (cons x processed-elements)
+        processed-elements)))
