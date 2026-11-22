@@ -154,3 +154,30 @@ expr_str(expr(Op, L, R), ParentPrec, Side, Str) :-
     ->  format(string(Str), "(~w)", [Inner])
     ;   Str = Inner
     ).
+
+% ============================================================
+% Unit 5: generate_equation/2
+% ============================================================
+
+% generate_equation(+List, -Equation)
+%
+% Declarative reading: Equation is a valid arithmetic equation string for List,
+% using every number exactly once in the original order. It places operators
+% +, -, *, / between numbers and exactly one = to split the list into a
+% left-hand side expression and a right-hand side expression whose integer
+% values are equal.
+%
+% Fails cleanly (no loop, no error) when no valid equation exists, including
+% when List has fewer than two elements (split_list/3 fails immediately then).
+%
+% On backtracking, generates further valid equations in the order determined
+% by split_list/3, build_expr/2, and eval_expr/2.
+generate_equation(List, Equation) :-
+    split_list(List, LeftNums, RightNums),
+    build_expr(LeftNums,  LeftExpr),
+    build_expr(RightNums, RightExpr),
+    eval_expr(LeftExpr,  V),
+    eval_expr(RightExpr, V),          % same variable V: both sides must be equal
+    expr_to_string(LeftExpr,  LS),
+    expr_to_string(RightExpr, RS),
+    format(string(Equation), "~w=~w", [LS, RS]).
