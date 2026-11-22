@@ -70,3 +70,23 @@ clue(8, Sol) :-
     memberchk(p(_, Dept, Lang, data), Sol),
     Dept == research,
     Lang \== javascript.
+
+    % satisfies(+Active, -Sol)
+% Sol is a candidate in which every clue whose number is in Active holds.
+% Clues that are not in Active are ignored.
+satisfies(Active, Sol) :-
+    candidate(Sol),
+    forall(member(N, Active), clue(N, Sol)).
+
+% print_person(+P)
+% Prints one friend as "Name = [Dept, Lang, Project]" on its own line.
+% ~w writes atoms without quotes, so 'c++' and 'AI' appear as c++ and AI.
+print_person(p(Name, Dept, Lang, Project)) :-
+    format("~w = [~w, ~w, ~w]~n", [Name, Dept, Lang, Project]).
+
+% main/0
+% Finds one solution that satisfies clues 1 to 8 and prints it, one line per
+% friend, in the order Alex, Ben, Carla, Dana.
+main :-
+    once(satisfies([1, 2, 3, 4, 5, 6, 7, 8], Sol)),
+    forall(member(P, Sol), print_person(P)).
