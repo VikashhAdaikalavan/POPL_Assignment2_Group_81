@@ -198,3 +198,18 @@ generate_equation(List, Equation) :-
 all_equations(List, Equations) :-
     findall(E, generate_equation(List, E), All),
     sort(All, Equations).
+
+% ============================================================
+% Unit 7: count_equations/2
+% ============================================================
+
+% count_equations(+List, -N)
+%
+% Declarative reading: N is the number of distinct valid arithmetic
+% equations that can be formed from List.
+%
+% Computes all valid equations using all_equations/2 and unifies N
+% with the length of that list using length/2. Always succeeds.
+count_equations(List, N) :-
+    all_equations(List, Equations),
+    length(Equations, N).
