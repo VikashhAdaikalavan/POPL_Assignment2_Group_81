@@ -96,3 +96,18 @@
   (begin
     (display (inorder tree))
     (newline)))
+
+;; print-all-traversals: prints inorder, preorder, and postorder lists on three lines.
+;; Arguments: tree ('() or (value left right)).
+;; Return type: void (prints three lines via display and newline).
+;; Recursive reading: printing all traversals for a tree displays (inorder tree)
+;; on line 1, (preorder tree) on line 2, and (postorder tree) on line 3, each
+;; terminated by newline, delegating traversal to the corresponding helpers.
+(define (print-all-traversals tree)
+  (begin
+    (display (inorder tree))
+    (newline)
+    (display (preorder tree))
+    (newline)
+    (display (postorder tree))
+    (newline)))
