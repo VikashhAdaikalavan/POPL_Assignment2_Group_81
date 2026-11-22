@@ -63,3 +63,25 @@
                               (acc-right (step right acc-left)))
                          (cons val acc-right))))))
     (my-reverse (step tree '()) '())))
+
+;; tree-height-and-leaves: computes the height and leaf count of a binary tree.
+;; Arguments: tree ('() or (value left right)).
+;; Return type: two-element list (list height leaf-count) of non-negative integers.
+;; Recursive reading: the (height leaf-count) pair for a non-empty tree has
+;; height 1 plus the max of the heights of its left and right subtrees, and
+;; leaf count equal to the sum of the leaf counts of its left and right subtrees
+;; (or 1 if both subtrees are '()); for '(), it is '(0 0).
+(define (tree-height-and-leaves tree)
+  (letrec ((step (lambda (t)
+                   (if (null? t)
+                       (list 0 0)
+                       (let* ((left (cadr t))
+                              (right (caddr t)))
+                         (if (and (null? left) (null? right))
+                             (list 1 1)
+                             (let ((res-l (step left))
+                                   (res-r (step right)))
+                               (let ((h (+ 1 (max (car res-l) (car res-r))))
+                                     (leaves (+ (cadr res-l) (cadr res-r))))
+                                 (list h leaves)))))))))
+    (step tree)))
