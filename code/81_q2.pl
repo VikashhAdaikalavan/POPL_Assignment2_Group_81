@@ -181,3 +181,20 @@ generate_equation(List, Equation) :-
     expr_to_string(LeftExpr,  LS),
     expr_to_string(RightExpr, RS),
     format(string(Equation), "~w=~w", [LS, RS]).
+
+% ============================================================
+% Unit 6: all_equations/2
+% ============================================================
+
+% all_equations(+List, -Equations)
+%
+% Declarative reading: Equations is the sorted, duplicate-free list of all
+% valid arithmetic equation strings for List, in standard order of terms
+% (lexicographic for strings). Returns [] when no valid equation exists,
+% including when List has fewer than two elements.
+%
+% Uses findall/3 to collect every solution from generate_equation/2 without
+% failing, then sort/2 to sort and remove any duplicates.
+all_equations(List, Equations) :-
+    findall(E, generate_equation(List, E), All),
+    sort(All, Equations).
