@@ -71,6 +71,10 @@ clue(8, Sol) :-
     Dept == research,
     Lang \== javascript.
 
+% CLUE 9: The friend who prefers the AI project works in the testing department.
+clue(9, Sol) :-
+    memberchk(p(_, Dept, _, 'AI'), Sol),
+    Dept == testing.
     % satisfies(+Active, -Sol)
 % Sol is a candidate in which every clue whose number is in Active holds.
 % Clues that are not in Active are ignored.
